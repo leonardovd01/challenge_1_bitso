@@ -1,14 +1,14 @@
 import os
-import requests
 import time
-import json
 from datetime import datetime
-import certifi
+
+import requests
 import pandas as pd
 
 
 def fetch_orderbook(book: list):
-    """_summary_
+    """
+    Fetch order book from the bitso API.
 
     Args:
         book (list): List of book to call from bitso app
@@ -23,21 +23,25 @@ def fetch_orderbook(book: list):
 
 
 def calculate_spread(bid, ask):
-    """_summary_
+    """
+    Calculate the spread between bid and ask prices.
 
     Args:
-        bid (_type_): _description_
-        ask (_type_): _description_
+        bid (float): Bid price.
+        ask (float): Ask price.
 
     Returns:
-        _type_: _description_
+        float: The calculated spread.
     """    
     spread = (ask - bid) * 100 / ask
     return spread
 
 
 def main():
-    """Main function to get spred from the called parameters
+    """
+    Main function to get spread from the called parameters.
+    Continuously fetches order book data and calculates the spread,
+    storing the results in a CSV file every 10 minutes.
     """    
     books = ["btc_mxn", "usd_mxn"]
     observations = []
@@ -51,7 +55,7 @@ def main():
             ask = float(data.get('asks')[0].get('price'))
             spread = calculate_spread(bid, ask)
 
-            # Generate clean dictionary to append and get dataframe
+            # Generate a clean dictionary for appending and creating a DataFrame
             record = {
                 "orderbook_timestamp": timestamp,
                 "book": book,
@@ -64,8 +68,8 @@ def main():
         # Sleep for 1 second
         time.sleep(1)
 
-        # Every 10 minutes, save observations to a file
-        if len(observations) >= 10:  
+        # Save observations to a file every 10 minutes
+        if len(observations) >= 600:  
             df = pd.DataFrame(observations)
             current_time = datetime.utcnow()
             year = current_time.strftime("%Y")
@@ -74,14 +78,14 @@ def main():
             hour = current_time.strftime("%H")
             minute = current_time.strftime("%M%S")
             
-            # Define the partion to save the data following Hadopp style
+            # Define the partition structure for saving data following Hadoop best practices
             directory = f"data/YEAR={year}/MONTH={month}/DAY={day}/HOUR={hour}"
             os.makedirs(directory, exist_ok=True)
 
             file_path = f"{directory}/{minute}_orderbook.csv"
             df.to_csv(file_path, index=False)
             print(f'File saved in {file_path}')
-            # Reset observations to save new data every ten minutes
+            # Reset observations to start fresh every 10 minutes
             observations = []
 
 if __name__ == "__main__":
