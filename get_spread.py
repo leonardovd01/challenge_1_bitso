@@ -37,14 +37,18 @@ def calculate_spread(bid, ask):
     return spread
 
 
-def main():
+def main(iterations=None):
     """
     Main function to get spread from the called parameters.
     Continuously fetches order book data and calculates the spread,
     storing the results in a CSV file every 10 minutes.
+
+    Args:
+        iterations (int, optional): Number of iterations to run the loop for testing.
     """    
     books = ["btc_mxn", "usd_mxn"]
     observations = []
+    iteration_count = 0
 
     while True:
         for book in books:
@@ -67,6 +71,7 @@ def main():
 
         # Sleep for 1 second
         time.sleep(1)
+        iteration_count += 1
 
         # Save observations to a file every 10 minutes
         if len(observations) >= 600:  
@@ -87,6 +92,9 @@ def main():
             print(f'File saved in {file_path}')
             # Reset observations to start fresh every 10 minutes
             observations = []
+        if iterations and iteration_count >= iterations:
+            break
+       
 
 if __name__ == "__main__":
     main()
