@@ -5,6 +5,7 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Unit Testing](#utest)
 - [Partitions Justification](#partitions)
 - [Contributing](#contributing)
 - [License](#license)
@@ -55,6 +56,11 @@ The project includes a script and a Jupyter Notebook that perform the same ETL d
     ```bash
     jupyter notebook Challenge_1.ipynb
     ```
+
+## Unit Testing
+
+You can find the unit testing code in `test_script.py` and the requirements in `requirements_test.txt`.
+
 ## Partitions Justification
 
 ### Nested DateTime Partitions
